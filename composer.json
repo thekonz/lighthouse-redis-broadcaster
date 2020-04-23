@@ -1,0 +1,15 @@
+{
+  "name": "thekonz/lighthouse-redis-broadcaster",
+  "description": "A lighthouse-php redis broadcaster to be used with laravel-echo-server.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    { 
+      "name": "Konstantin Duczek",
+      "email": "konz.duczek@gmail.com"
+    }
+  ],
+  "require": {
+    "nuwave/lighthouse": "^4"
+  }
+}
