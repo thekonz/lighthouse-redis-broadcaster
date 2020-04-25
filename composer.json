@@ -10,6 +10,33 @@
     }
   ],
   "require": {
-    "nuwave/lighthouse": "^4"
+    "php": ">=7.1",
+    "nuwave/lighthouse": "^4",
+    "illuminate/support": "^7.7",
+    "illuminate/console": "^7.7",
+    "illuminate/cache": "^7.7",
+    "illuminate/redis": "^7.7",
+    "illuminate/broadcasting": "^7.7",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "thekonz\\LighthouseRedisBroadcaster\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "thekonz\\LighthouseRedisBroadcaster\\SubscriptionServiceProvider"
+      ]
+    }
   }
 }
