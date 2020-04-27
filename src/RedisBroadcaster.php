@@ -2,8 +2,12 @@
 
 namespace thekonz\LighthouseRedisBroadcaster;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Nuwave\Lighthouse\Subscriptions\Subscriber;
+use Symfony\Component\HttpFoundation\Response;
 use thekonz\LighthouseRedisBroadcaster\Contracts\Broadcaster;
+use thekonz\LighthouseRedisBroadcaster\Events\SubscriptionEvent;
 
 class RedisBroadcaster implements Broadcaster
 {
@@ -26,5 +30,23 @@ class RedisBroadcaster implements Broadcaster
         $this->broadcaster->event(
             new SubscriptionEvent($subscriber->channel, $data)
         );
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function authorized(Request $request)
+    {
+        return new JsonResponse(['message' => 'Authorized'], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function unauthorized(Request $request)
+    {
+        return new JsonResponse(['message' => 'Unauthorized'], 403);
     }
 }

@@ -3,7 +3,9 @@
 
 namespace thekonz\LighthouseRedisBroadcaster;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Redis\Connection;
+use Illuminate\Contracts\Redis\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Nuwave\Lighthouse\Subscriptions\Contracts\StoresSubscriptions;
@@ -37,9 +39,15 @@ class StorageManager implements StoresSubscriptions
      */
     private $connection;
 
-    public function __construct(Connection $store)
+    /**
+     * @param Repository $config
+     * @param Factory $redis
+     */
+    public function __construct(Repository $config, Factory $redis)
     {
-        $this->connection = $store;
+        $this->connection = $redis->connection(
+            $config->get('lighthouse.broadcasters.redis.connection', 'default')
+        );
     }
 
     /**
