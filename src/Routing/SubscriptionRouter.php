@@ -8,7 +8,7 @@ use Illuminate\Routing\Router;
 
 class SubscriptionRouter
 {
-    public function __invoke(Router $router)
+    public function routes(Router $router)
     {
         $router->post('graphql/subscriptions/auth', [
             'as' => 'lighthouse.subscriptions.auth',
