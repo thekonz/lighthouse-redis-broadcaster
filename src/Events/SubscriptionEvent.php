@@ -27,4 +27,9 @@ class SubscriptionEvent implements ShouldBroadcast
     {
         return new PresenceChannel($this->channel);
     }
+
+    public function broadcastAs()
+    {
+        return 'lighthouse.subscription';
+    }
 }
