@@ -21,7 +21,7 @@ class SubscriptionServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/config.php', 'lighthouse.broadcasters.redis');
+        $this->mergeConfigFrom(__DIR__ . '/config.php', 'lighthouse.subscriptions.broadcasters.redis');
 
         $this->app->singleton(Broadcaster::class, RedisBroadcaster::class);
         $this->app->singleton(BaseBroadcastManager::class, BroadcastManager::class);
