@@ -31,12 +31,5 @@
     "psr-4": {
       "Tests\\": "tests/"
     }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "thekonz\\LighthouseRedisBroadcaster\\SubscriptionServiceProvider"
-      ]
-    }
   }
 }
