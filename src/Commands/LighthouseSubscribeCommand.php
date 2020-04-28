@@ -15,6 +15,10 @@ class LighthouseSubscribeCommand extends Command
 
     public function handle(Repository $config, Factory $redis)
     {
+        ini_set('default_socket_timeout', -1);
+
+        $this->info('Listening to events...');
+
         $redis->connection(
             $config->get('lighthouse.broadcasters.redis.connection', 'default')
         )->subscribe(
