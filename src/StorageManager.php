@@ -98,6 +98,8 @@ class StorageManager implements StoresSubscriptions
      */
     public function storeSubscriber(Subscriber $subscriber, string $topic)
     {
+        $subscriber->channel = str_replace('private-', 'presence-', $subscriber->channel);
+
         $this->connection->command('sadd', [
             $this->topicKey($topic),
             $subscriber->channel
