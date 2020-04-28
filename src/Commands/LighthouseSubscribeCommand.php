@@ -33,8 +33,8 @@ class LighthouseSubscribeCommand extends Command
         $event = $payload->event;
         $this->info(sprintf(
             '[debug] %d members in channel "%s": %s',
-            $event->channel,
             count($event->members),
+            $event->channel,
             $message
         ));
     }
