@@ -12,10 +12,6 @@ class SubscriptionServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/config.php' => $this->app->make('path.config') . '/lighthouse-redis-broadcaster.php',
-        ], 'config');
-
         if ($this->app->runningInConsole()) {
             $this->commands([
                 LighthouseSubscribeCommand::class,
