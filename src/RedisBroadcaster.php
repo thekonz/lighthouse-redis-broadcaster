@@ -38,7 +38,14 @@ class RedisBroadcaster implements Broadcaster
      */
     public function authorized(Request $request)
     {
-        return new JsonResponse(['message' => 'Authorized'], 200);
+        $userId = md5($request->input('channel_name') . $request->input('socket_id'));
+
+        return new JsonResponse([
+            'channel_data' => [
+                'user_id' => $userId,
+                'user_info' => [],
+            ]
+        ]);
     }
 
     /**
