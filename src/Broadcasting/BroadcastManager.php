@@ -6,7 +6,6 @@ namespace thekonz\LighthouseRedisBroadcaster\Broadcasting;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Nuwave\Lighthouse\Subscriptions\BroadcastManager as BaseBroadcastManager;
 use thekonz\LighthouseRedisBroadcaster\Contracts\Broadcaster;
-use thekonz\LighthouseRedisBroadcaster\Broadcasting\RedisBroadcaster;
 
 class BroadcastManager extends BaseBroadcastManager
 {
@@ -20,10 +19,10 @@ class BroadcastManager extends BaseBroadcastManager
 
     /**
      * @param array $config
-     * @return RedisBroadcaster
+     * @return Broadcaster
      * @throws BindingResolutionException
      */
-    public function createRedisDriver(array $config): RedisBroadcaster
+    public function createRedisDriver(array $config): Broadcaster
     {
         return $this->app->make(Broadcaster::class);
     }
