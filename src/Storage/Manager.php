@@ -1,7 +1,7 @@
 <?php
 
 
-namespace thekonz\LighthouseRedisBroadcaster;
+namespace thekonz\LighthouseRedisBroadcaster\Storage;
 
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Redis\Connection;
@@ -22,7 +22,7 @@ use Nuwave\Lighthouse\Subscriptions\Subscriber;
  * - graphql.subscriber.presence-lighthouse-1 = { query: "{ id, name }" }
  * - graphql.subscriber.presence-lighthouse-2 = { query: "{ name, created_at }" }
  */
-class StorageManager implements StoresSubscriptions
+class Manager implements StoresSubscriptions
 {
     /**
      * @var string

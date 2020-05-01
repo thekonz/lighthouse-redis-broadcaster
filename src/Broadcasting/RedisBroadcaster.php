@@ -1,6 +1,6 @@
 <?php
 
-namespace thekonz\LighthouseRedisBroadcaster;
+namespace thekonz\LighthouseRedisBroadcaster\Broadcasting;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

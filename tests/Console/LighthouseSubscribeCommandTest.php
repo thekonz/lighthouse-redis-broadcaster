@@ -10,7 +10,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use thekonz\LighthouseRedisBroadcaster\Console\LighthouseSubscribeCommand;
-use thekonz\LighthouseRedisBroadcaster\StorageManager;
+use thekonz\LighthouseRedisBroadcaster\Storage\Manager;
 
 class LighthouseSubscribeCommandTest extends TestCase
 {
@@ -35,7 +35,7 @@ class LighthouseSubscribeCommandTest extends TestCase
         $command = new LighthouseSubscribeCommand();
         $command->setOutput($output);
 
-        $storageManager = $this->createMock(StorageManager::class);
+        $storageManager = $this->createMock(Manager::class);
 
         $command->handle($config, $redisFactory, $storageManager);
     }
@@ -54,7 +54,7 @@ class LighthouseSubscribeCommandTest extends TestCase
         $redisFactory = $this->mockRedisFactory($redisConnection);
         $output = $this->createMock(OutputStyle::class);
         $input = $this->createMock(InputInterface::class);
-        $storage = $this->createMock(StorageManager::class);
+        $storage = $this->createMock(Manager::class);
 
         $command = new LighthouseSubscribeCommand();
         $command->setOutput($output);
