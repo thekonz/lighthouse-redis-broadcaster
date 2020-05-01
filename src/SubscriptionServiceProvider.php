@@ -5,7 +5,7 @@ namespace thekonz\LighthouseRedisBroadcaster;
 use Illuminate\Support\ServiceProvider;
 use Nuwave\Lighthouse\Subscriptions\BroadcastManager as BaseBroadcastManager;
 use Nuwave\Lighthouse\Subscriptions\Contracts\StoresSubscriptions;
-use thekonz\LighthouseRedisBroadcaster\Commands\LighthouseSubscribeCommand;
+use thekonz\LighthouseRedisBroadcaster\Console\LighthouseSubscribeCommand;
 use thekonz\LighthouseRedisBroadcaster\Contracts\Broadcaster;
 
 class SubscriptionServiceProvider extends ServiceProvider
