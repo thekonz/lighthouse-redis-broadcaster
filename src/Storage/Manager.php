@@ -98,6 +98,7 @@ class Manager implements StoresSubscriptions
      */
     public function storeSubscriber(Subscriber $subscriber, string $topic)
     {
+        $subscriber->topic = $topic;
         $subscriber->channel = str_replace('private-', 'presence-', $subscriber->channel);
 
         $this->connection->command('sadd', [
@@ -122,7 +123,10 @@ class Manager implements StoresSubscriptions
 
         if ($subscriber) {
             $this->connection->command('del', [$key]);
-            $this->connection->command('srem', [$subscriber->topic, $channel]);
+            $this->connection->command('srem', [
+                $this->topicKey($subscriber->topic),
+                $channel
+            ]);
         }
 
         return $subscriber;
