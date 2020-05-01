@@ -17,10 +17,10 @@ use Nuwave\Lighthouse\Subscriptions\Subscriber;
  * - Subscribers are clients that are listening to channels like "private-lighthouse-a7ef3d".
  *
  * This manager stores a SET of subscriber channels and the subscribers itself like this:
- * - graphql.topic.userCreated = [ "private-lighthouse-1", "private-lighthouse-2", ... ]
- * - graphql.topic.userDeleted = [ "private-lighthouse-5", "private-lighthouse-6", ... ]
- * - graphql.subscriber.private-lighthouse-1 = { query: "{ id, name }" }
- * - graphql.subscriber.private-lighthouse-2 = { query: "{ name, created_at }" }
+ * - graphql.topic.userCreated = [ "presence-lighthouse-1", "presence-lighthouse-2", ... ]
+ * - graphql.topic.userDeleted = [ "presence-lighthouse-5", "presence-lighthouse-6", ... ]
+ * - graphql.subscriber.presence-lighthouse-1 = { query: "{ id, name }" }
+ * - graphql.subscriber.presence-lighthouse-2 = { query: "{ name, created_at }" }
  */
 class StorageManager implements StoresSubscriptions
 {
