@@ -8,6 +8,7 @@ use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Contracts\Redis\Factory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use thekonz\LighthouseRedisBroadcaster\Console\LighthouseSubscribeCommand;
 use thekonz\LighthouseRedisBroadcaster\Storage\Manager;
@@ -113,5 +114,47 @@ class LighthouseSubscribeCommandTest extends TestCase
             ->willReturn('foobar');
 
         return $config;
+    }
+
+    public function testLog()
+    {
+        $config = $this->mockConfigRepository();
+
+        $redisConnection = $this->createMock(Connection::class);
+        $redisConnection->expects($this->once())
+            ->method('subscribe')
+            ->willReturnCallback(function ($channel, \Closure $callback) use (&$listener) {
+                $listener = $callback;
+            });
+
+        $redisFactory = $this->mockRedisFactory($redisConnection);
+        $storage = $this->createMock(Manager::class);
+        $output = $this->createMock(OutputStyle::class);
+        $input = $this->createMock(InputInterface::class);
+        $input->expects($this->atLeastOnce())
+            ->method('getOption')
+            ->with('debug')
+            ->willReturn(true);
+
+        $command = new LighthouseSubscribeCommand();
+        $command->setOutput($output);
+        $command->setInput($input);
+
+        $command->handle($config, $redisFactory, $storage);
+
+        $events = [
+            json_encode(['event' => ['channel' => 'ignore-me:members', 'members' => []]]),
+            json_encode(['event' => ['channel' => 'presence-lighthouse:members', 'members' => []]]),
+        ];
+
+        $output->expects($this->any())
+            ->method('getFormatter')
+            ->willReturn($this->createMock(OutputFormatterInterface::class));
+
+        $output->expects($this->exactly(2))
+            ->method('writeln');
+
+        call_user_func($listener, $events[0]);
+        call_user_func($listener, $events[1]);
     }
 }
