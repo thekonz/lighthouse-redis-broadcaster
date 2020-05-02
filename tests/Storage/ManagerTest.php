@@ -123,7 +123,7 @@ class ManagerTest extends TestCase
 
         $redisConnection->expects($this->at(1))
             ->method('command')
-            ->with('mget', ['graphql.subscriber.foo1', 'graphql.subscriber.foo2'])
+            ->with('mget', [['graphql.subscriber.foo1', 'graphql.subscriber.foo2']])
             ->willReturn(array_map('serialize', $subscribers));
 
         $manager = new Manager($config, $redisFactory);
