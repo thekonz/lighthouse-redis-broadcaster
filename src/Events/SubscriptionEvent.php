@@ -2,7 +2,7 @@
 
 namespace thekonz\LighthouseRedisBroadcaster\Events;
 
-use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class SubscriptionEvent implements ShouldBroadcast
@@ -10,14 +10,14 @@ class SubscriptionEvent implements ShouldBroadcast
     /**
      * @var string
      */
-    public $channel;
+    private $channel;
 
     /**
-     * @var array
+     * @var mixed
      */
     public $data;
 
-    public function __construct(string $channel, array $data)
+    public function __construct(string $channel, $data)
     {
         $this->channel = $channel;
         $this->data = $data;
@@ -25,7 +25,7 @@ class SubscriptionEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel($this->channel);
+        return new PresenceChannel($this->channel);
     }
 
     public function broadcastAs()

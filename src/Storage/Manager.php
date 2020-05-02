@@ -99,7 +99,6 @@ class Manager implements StoresSubscriptions
     public function storeSubscriber(Subscriber $subscriber, string $topic)
     {
         $subscriber->topic = $topic;
-        $subscriber->channel = str_replace('private-', 'presence-', $subscriber->channel);
 
         $this->connection->command('sadd', [
             $this->topicKey($topic),
