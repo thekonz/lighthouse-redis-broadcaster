@@ -10,7 +10,7 @@ class SubscriptionEvent implements ShouldBroadcast
     /**
      * @var string
      */
-    private $channel;
+    public $channel;
 
     /**
      * @var mixed
