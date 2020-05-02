@@ -2,7 +2,7 @@
 
 namespace thekonz\LighthouseRedisBroadcaster\Events;
 
-use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class SubscriptionEvent implements ShouldBroadcast
@@ -25,7 +25,7 @@ class SubscriptionEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new PresenceChannel($this->channel);
+        return new Channel($this->channel);
     }
 
     public function broadcastAs()
