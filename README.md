@@ -69,9 +69,9 @@ The response will be:
 }
 ```
 
-Now you may use laravel echo to monitor the subscription as a presence channel (notice that `presence-` was cut off, because laravel echo prefixes the channel itself):
+Now you may use laravel echo to monitor the subscription as a presence channel:
 ```js
-Echo.join('lighthouse-9RrjQE84nqaxXt58ZsgREPaI9AxGjAv4-1588101712')
+Echo.channel('presence-lighthouse-9RrjQE84nqaxXt58ZsgREPaI9AxGjAv4-1588101712')
     .listen('lighthouse.subscription', ({ data }) => {
         console.log(data);
     })
