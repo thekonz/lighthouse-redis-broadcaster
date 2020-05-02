@@ -21,6 +21,13 @@ Add the service provider **after** the Lighthouse subscription service provider 
         \thekonz\LighthouseRedisBroadcaster\SubscriptionServiceProvider::class, 
 ```
 
+Add this to your `.env`:
+```dotenv
+LIGHTHOUSE_BROADCASTER=redis
+REDIS_PREFIX=
+``` 
+If you do not set the `REDIS_PREFIX` to empty, it will default to `<app name>_database_` (by default: `laravel_database_`) and all redis channels will be prefixed with it.
+
 ## Setting up automatic removal of subscription channels
 
 Lighthouse by default does not remove vacated channels. In order to prevent redis from running low on memory all the time, you need to configure the laravel-echo-server to publish updates about its presence channels and run a subscriber that removes vacated channels from redis.   
