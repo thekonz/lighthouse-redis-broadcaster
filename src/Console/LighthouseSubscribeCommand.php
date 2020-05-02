@@ -28,7 +28,6 @@ class LighthouseSubscribeCommand extends Command
     public function handle(Repository $config, Factory $redis, StoresSubscriptions $storage)
     {
         $this->storage = $storage;
-        ini_set('default_socket_timeout', -1);
 
         $this->info('Listening to events...');
 

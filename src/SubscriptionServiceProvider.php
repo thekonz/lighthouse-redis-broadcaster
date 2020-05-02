@@ -24,6 +24,10 @@ class SubscriptionServiceProvider extends ServiceProvider
 
     public function register()
     {
+        if ($this->app->runningInConsole()) {
+            ini_set('default_socket_timeout', -1);
+        }
+
         $this->mergeConfigFrom(__DIR__ . '/config.php', 'lighthouse.subscriptions.broadcasters.redis');
 
         $this->app->singleton(Broadcaster::class, RedisBroadcaster::class);
