@@ -63,7 +63,7 @@ class LighthouseSubscribeCommandTest extends TestCase
 
         $command->handle($config, $redisFactory, $storage);
 
-        $channel = 'presence-lighthouse-foo-1234';
+        $channel = 'presence-private-lighthouse-foo-1234';
         $events = [
             json_encode(['event' => ['channel' => $channel . ':members', 'members' => []]]),
             json_encode(['event' => ['channel' => $channel . ':members', 'members' => ['some user']]]),
@@ -144,7 +144,7 @@ class LighthouseSubscribeCommandTest extends TestCase
 
         $events = [
             json_encode(['event' => ['channel' => 'ignore-me:members', 'members' => []]]),
-            json_encode(['event' => ['channel' => 'presence-lighthouse:members', 'members' => []]]),
+            json_encode(['event' => ['channel' => 'presence-private-lighthouse:members', 'members' => []]]),
         ];
 
         $output->expects($this->any())

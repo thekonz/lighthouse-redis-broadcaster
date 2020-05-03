@@ -95,7 +95,7 @@ class LighthouseSubscribeCommand extends Command
      */
     private function isLighthouseChannel(string $channel): bool
     {
-        return strpos($channel, 'presence-lighthouse-') === 0;
+        return strpos($channel, 'presence-private-lighthouse-') === 0;
     }
 
     /**
