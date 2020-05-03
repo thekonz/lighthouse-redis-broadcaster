@@ -95,7 +95,7 @@ class LighthouseSubscribeCommand extends Command
      */
     private function isLighthouseChannel(string $channel): bool
     {
-        return strpos($channel, 'presence-private-lighthouse-') === 0;
+        return strpos($channel, 'private-lighthouse-') === 0;
     }
 
     /**
@@ -121,6 +121,6 @@ class LighthouseSubscribeCommand extends Command
     private function sanitizeChannelName(string $channel): string
     {
         [$channelName] = explode(':', $channel);
-        return $channelName;
+        return str_replace('presence-', '', $channelName);
     }
 }

@@ -63,11 +63,11 @@ class LighthouseSubscribeCommandTest extends TestCase
 
         $command->handle($config, $redisFactory, $storage);
 
-        $channel = 'presence-private-lighthouse-foo-1234';
+        $channel = 'private-lighthouse-foo-1234';
         $events = [
-            json_encode(['event' => ['channel' => $channel . ':members', 'members' => []]]),
-            json_encode(['event' => ['channel' => $channel . ':members', 'members' => ['some user']]]),
-            json_encode(['event' => ['channel' => $channel . ':members', 'members' => []]]),
+            json_encode(['event' => ['channel' => 'presence-' . $channel . ':members', 'members' => []]]),
+            json_encode(['event' => ['channel' => 'presence-' . $channel . ':members', 'members' => ['some user']]]),
+            json_encode(['event' => ['channel' => 'presence-' . $channel . ':members', 'members' => []]]),
         ];
 
         $storage->expects($this->any())
