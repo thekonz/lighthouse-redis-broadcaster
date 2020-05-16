@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Redis\Factory;
 use Nuwave\Lighthouse\Subscriptions\Contracts\StoresSubscriptions;
+use Nuwave\Lighthouse\Subscriptions\Subscriber;
 
 class LighthouseSubscribeCommand extends Command
 {
@@ -25,18 +26,26 @@ class LighthouseSubscribeCommand extends Command
      */
     private $knownChannels;
 
-    public function handle(Repository $config, Factory $redis, StoresSubscriptions $storage)
+    /**
+     * @param Factory $redis
+     * @param StoresSubscriptions $storage
+     */
+    public function handle(Factory $redis, StoresSubscriptions $storage)
     {
         $this->storage = $storage;
 
         $this->info('Listening to events...');
 
-        $redis->connection(
-            $config->get('lighthouse.broadcasters.redis.connection', 'default')
-        )->subscribe(
-            'PresenceChannelUpdated',
-            \Closure::fromCallable([$this, 'handleSubscriptionEvent'])
-        );
+        // The socket would time out without this.
+        ini_set('default_socket_timeout', -1);
+
+        // This connection is usually artificially created.
+        // @see \thekonz\LighthouseRedisBroadcaster\SubscriptionServiceProvider::createSubscriptionConnection
+        $redis->connection('lighthouse_subscription')
+            ->subscribe(
+                ['PresenceChannelUpdated'],
+                \Closure::fromCallable([$this, 'handleSubscriptionEvent'])
+            );
     }
 
     private function handleSubscriptionEvent(string $message)
@@ -74,7 +83,7 @@ class LighthouseSubscribeCommand extends Command
         }
 
         $this->info(sprintf(
-            '[debug] %d members in channel "%s"',
+            '[debug] %d members in channel "%s".',
             $memberCount,
             $channel
         ));
@@ -85,8 +94,9 @@ class LighthouseSubscribeCommand extends Command
      */
     private function deleteSubscriber(string $channel)
     {
-        $this->storage->deleteSubscriber($channel);
+        $subscriber = $this->storage->deleteSubscriber($channel);
         unset($this->knownChannels[$channel]);
+        $this->logDeletedSubscriber($subscriber);
     }
 
     /**
@@ -108,7 +118,7 @@ class LighthouseSubscribeCommand extends Command
         }
 
         $this->warn(
-            sprintf('[debug] Ignored event for channel "%s"', $channel)
+            sprintf('[debug] Ignored event for channel "%s".', $channel)
         );
     }
 
@@ -122,5 +132,21 @@ class LighthouseSubscribeCommand extends Command
     {
         [$channelName] = explode(':', $channel);
         return str_replace('presence-', '', $channelName);
+    }
+
+    /**
+     * @param Subscriber|null $subscriber
+     */
+    private function logDeletedSubscriber(?Subscriber $subscriber)
+    {
+        if (!$this->option('debug') || \is_null($subscriber)) {
+            return;
+        }
+
+        $this->info(sprintf(
+            '[debug] Deleted subscriber "%s" on topic "%s".',
+            $subscriber->channel,
+            $subscriber->topic
+        ));
     }
 }

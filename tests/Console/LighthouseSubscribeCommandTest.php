@@ -6,6 +6,7 @@ use Illuminate\Config\Repository;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Contracts\Redis\Connection;
 use Illuminate\Contracts\Redis\Factory;
+use Nuwave\Lighthouse\Subscriptions\Subscriber;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
@@ -17,13 +18,11 @@ class LighthouseSubscribeCommandTest extends TestCase
 {
     public function testSubscribe()
     {
-        $config = $this->mockConfigRepository();
-
         $redisConnection = $this->createMock(Connection::class);
         $redisConnection->expects($this->once())
             ->method('subscribe')
             ->with(
-                'PresenceChannelUpdated',
+                ['PresenceChannelUpdated'],
                 $this->isInstanceOf(\Closure::class)
             );
 
@@ -38,13 +37,11 @@ class LighthouseSubscribeCommandTest extends TestCase
 
         $storageManager = $this->createMock(Manager::class);
 
-        $command->handle($config, $redisFactory, $storageManager);
+        $command->handle($redisFactory, $storageManager);
     }
 
     public function testListen()
     {
-        $config = $this->mockConfigRepository();
-
         $redisConnection = $this->createMock(Connection::class);
         $redisConnection->expects($this->once())
             ->method('subscribe')
@@ -61,7 +58,7 @@ class LighthouseSubscribeCommandTest extends TestCase
         $command->setOutput($output);
         $command->setInput($input);
 
-        $command->handle($config, $redisFactory, $storage);
+        $command->handle($redisFactory, $storage);
 
         $channel = 'private-lighthouse-foo-1234';
         $events = [
@@ -96,30 +93,14 @@ class LighthouseSubscribeCommandTest extends TestCase
         $redisFactory = $this->createMock(Factory::class);
         $redisFactory->expects($this->once())
             ->method('connection')
-            ->with('foobar')
+            ->with('lighthouse_subscription')
             ->willReturn($redisConnection);
 
         return $redisFactory;
     }
 
-    /**
-     * @return Repository|MockObject
-     */
-    private function mockConfigRepository()
-    {
-        $config = $this->createMock(Repository::class);
-        $config->expects($this->once())
-            ->method('get')
-            ->with('lighthouse.broadcasters.redis.connection', 'default')
-            ->willReturn('foobar');
-
-        return $config;
-    }
-
     public function testLog()
     {
-        $config = $this->mockConfigRepository();
-
         $redisConnection = $this->createMock(Connection::class);
         $redisConnection->expects($this->once())
             ->method('subscribe')
@@ -140,21 +121,39 @@ class LighthouseSubscribeCommandTest extends TestCase
         $command->setOutput($output);
         $command->setInput($input);
 
-        $command->handle($config, $redisFactory, $storage);
+        $command->handle($redisFactory, $storage);
 
         $events = [
             json_encode(['event' => ['channel' => 'ignore-me:members', 'members' => []]]),
-            json_encode(['event' => ['channel' => 'presence-private-lighthouse:members', 'members' => []]]),
+            json_encode(['event' => ['channel' => 'presence-private-lighthouse-123:members', 'members' => []]]),
+            json_encode(['event' => ['channel' => 'presence-private-lighthouse-123:members', 'members' => ['foo', 'bar']]]),
+            json_encode(['event' => ['channel' => 'presence-private-lighthouse-123:members', 'members' => []]]),
         ];
 
         $output->expects($this->any())
             ->method('getFormatter')
             ->willReturn($this->createMock(OutputFormatterInterface::class));
 
-        $output->expects($this->exactly(2))
-            ->method('writeln');
+        $output->expects($this->exactly(5))
+            ->method('writeln')
+            ->withConsecutive(
+                ['<warning>[debug] Ignored event for channel "ignore-me".</warning>'],
+                ['<info>[debug] 0 members in channel "private-lighthouse-123".</info>'],
+                ['<info>[debug] 2 members in channel "private-lighthouse-123".</info>'],
+                ['<info>[debug] 0 members in channel "private-lighthouse-123".</info>'],
+                ['<info>[debug] Deleted subscriber "bar" on topic "foo".</info>']
+            );
+
+        $subscriber = $this->createMock(Subscriber::class);
+        $subscriber->topic = 'foo';
+        $subscriber->channel = 'bar';
+        $storage->expects($this->once())
+            ->method('deleteSubscriber')
+            ->willReturn($subscriber);
 
         call_user_func($listener, $events[0]);
         call_user_func($listener, $events[1]);
+        call_user_func($listener, $events[2]);
+        call_user_func($listener, $events[3]);
     }
 }
