@@ -84,7 +84,7 @@ class Manager implements StoresSubscriptions
     {
         $subscriberIds = $this->connection->command('smembers', [$this->topicKey($topic)]);
         $subscriberIds = array_map([$this, 'channelKey'], $subscriberIds);
-        $subscribers = $this->connection->command('mget', $subscriberIds);
+        $subscribers = $this->connection->command('mget', [$subscriberIds]);
 
         return collect(
             array_map([$this, 'unserialize'], $subscribers)
@@ -99,7 +99,6 @@ class Manager implements StoresSubscriptions
     public function storeSubscriber(Subscriber $subscriber, string $topic)
     {
         $subscriber->topic = $topic;
-        $subscriber->channel = str_replace('private-', 'presence-', $subscriber->channel);
 
         $this->connection->command('sadd', [
             $this->topicKey($topic),

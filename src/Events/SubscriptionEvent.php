@@ -13,11 +13,11 @@ class SubscriptionEvent implements ShouldBroadcast
     public $channel;
 
     /**
-     * @var array
+     * @var mixed
      */
     public $data;
 
-    public function __construct(string $channel, array $data)
+    public function __construct(string $channel, $data)
     {
         $this->channel = $channel;
         $this->data = $data;

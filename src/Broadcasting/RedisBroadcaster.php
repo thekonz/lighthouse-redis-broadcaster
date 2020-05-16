@@ -4,6 +4,7 @@ namespace thekonz\LighthouseRedisBroadcaster\Broadcasting;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Nuwave\Lighthouse\Subscriptions\Subscriber;
 use Symfony\Component\HttpFoundation\Response;
 use thekonz\LighthouseRedisBroadcaster\Contracts\Broadcaster;
@@ -28,7 +29,7 @@ class RedisBroadcaster implements Broadcaster
     public function broadcast(Subscriber $subscriber, array $data)
     {
         $this->broadcaster->event(
-            new SubscriptionEvent($subscriber->channel, $data)
+            new SubscriptionEvent($subscriber->channel, Arr::get($data, 'data', $data))
         );
     }
 

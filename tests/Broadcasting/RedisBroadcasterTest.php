@@ -17,8 +17,9 @@ class RedisBroadcasterTest extends TestCase
         $broadcastManager->expects($this->once())
             ->method('event')
             ->with($this->callback(function (SubscriptionEvent $event) {
-                return $event->channel === 'test-123' &&
-                    $event->data['data'] === 'foo';
+                return $event->broadcastAs() === 'lighthouse.subscription' &&
+                    $event->broadcastOn()->name === 'presence-test-123' &&
+                    $event->data === 'foo';
             }));
 
         $redisBroadcaster = new RedisBroadcaster($broadcastManager);

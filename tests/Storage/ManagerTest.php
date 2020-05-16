@@ -83,16 +83,16 @@ class ManagerTest extends TestCase
             ->method('command')
             ->with('sadd', [
                 'graphql.topic.some-topic',
-                'presence-lighthouse-foo',
+                'private-lighthouse-foo',
             ]);
 
         $subscriber = new DummySubscriber('private-lighthouse-foo');
         $redisConnection->expects($this->at(1))
             ->method('command')
             ->with('set', [
-                'graphql.subscriber.presence-lighthouse-foo',
-                'C:21:"Tests\DummySubscriber":58:{' . json_encode([
-                    'channel' => 'presence-lighthouse-foo',
+                'graphql.subscriber.private-lighthouse-foo',
+                'C:21:"Tests\DummySubscriber":57:{' . json_encode([
+                    'channel' => 'private-lighthouse-foo',
                     'topic' => 'some-topic',
                 ]) . '}',
             ]);
@@ -123,7 +123,7 @@ class ManagerTest extends TestCase
 
         $redisConnection->expects($this->at(1))
             ->method('command')
-            ->with('mget', ['graphql.subscriber.foo1', 'graphql.subscriber.foo2'])
+            ->with('mget', [['graphql.subscriber.foo1', 'graphql.subscriber.foo2']])
             ->willReturn(array_map('serialize', $subscribers));
 
         $manager = new Manager($config, $redisFactory);
